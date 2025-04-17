@@ -13,53 +13,37 @@ Este projeto implementa uma API REST em Laravel 10 para gerenciar tarefas em edi
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/building-task-manager.git
-   cd building-task-manager
+   git clone https://github.com/RichardLitz/test-proprli.git
+   
    ```
 
-2. Instale as dependências:
+2. Copie o arquivo de ambiente e configure as variáveis:
    ```bash
-   composer install
+   cp .env-local .env
    ```
 
-3. Copie o arquivo de ambiente e configure as variáveis:
+3. Suba o container:
    ```bash
-   cp .env.example .env
+   docker-compose build
+   docker-compose up -d
    ```
 
-4. Configure o arquivo `.env` com suas credenciais de banco de dados:
-   ```
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=building_task_manager
-   DB_USERNAME=seu_usuario
-   DB_PASSWORD=sua_senha
-   ```
-
-5. Gere a chave da aplicação:
+4. Instale as dependências:
    ```bash
-   php artisan key:generate
+   docker-compose exec app composer install
    ```
 
-6. Execute as migrações:
+5. Execute as migrações:
    ```bash
-   php artisan migrate
+   docker-compose exec app php artisan migrate
+   
+   docker-compose exec app php artisan optimize
+
    ```
 
-7. Opcionalmente, execute os seeders para popular o banco com dados de teste:
+6. Inicie o servidor de desenvolvimento:
    ```bash
-   php artisan db:seed
-   ```
-
-8. Gere uma chave para API tokens do Sanctum:
-   ```bash
-   php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
-   ```
-
-9. Inicie o servidor de desenvolvimento:
-   ```bash
-   php artisan serve
+  docker-compose exec app php artisan serve
    ```
 
 ## Estrutura da API
@@ -153,21 +137,6 @@ Content-Type: application/json
 Execute os testes unitários e de integração com o comando:
 
 ```bash
-php artisan test
+docker-compose exec app php artisan test
 ```
 
-## Padrões de Codificação
-
-Este projeto segue o padrão de codificação PSR-12. Para verificar o código, você pode executar:
-
-```bash
-./vendor/bin/phpcs --standard=PSR12 app/
-```
-
-## Contribuindo
-
-1. Faça um fork do projeto
-2. Crie sua branch de feature (`git checkout -b feature/nome-da-feature`)
-3. Faça commit das suas alterações (`git commit -m 'Adiciona nova feature'`)
-4. Faça push para a branch (`git push origin feature/nome-da-feature`)
-5. Abra um Pull Request
