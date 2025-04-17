@@ -36,6 +36,10 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Executa o Composer
 RUN composer install --optimize-autoloader --no-dev
 
+# Configurar o usuário para PHP-FPM
+RUN sed -i 's/user = www-data/user = root/g' /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i 's/group = www-data/group = root/g' /usr/local/etc/php-fpm.d/www.conf
+
 # Exponha a porta 9000 (PHP-FPM)
 EXPOSE 9000
 
