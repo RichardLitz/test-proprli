@@ -50,4 +50,15 @@ class TaskService
         
         return Task::create($data);
     }
+
+    /**
+     * Update the status of a task
+     */
+    public function updateTaskStatus(Task $task, string $status): Task
+    {
+        $task->status = $status;
+        $task->save();
+        
+        return $task;
+    }    
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskFilterRequest;
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskStatusRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Building;
 use App\Models\Task;
@@ -42,4 +43,16 @@ class TaskController extends Controller
             ->response()
             ->setStatusCode(201);
     }
+
+    /**
+     * Update the status of a task
+     */
+    public function updateStatus(Task $task, UpdateTaskStatusRequest $request): JsonResponse
+    {
+        $updatedTask = $this->taskService->updateTaskStatus($task, $request->validated('status'));
+        
+        return (new TaskResource($updatedTask))
+            ->response()
+            ->setStatusCode(200);
+    }    
 }

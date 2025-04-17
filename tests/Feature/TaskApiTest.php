@@ -17,15 +17,18 @@ class TaskApiTest extends TestCase
     {
         $user = User::factory()->create();
         $building = Building::factory()->create();
+        
+        $building->users()->attach($user);
+        
         $tasks = Task::factory()->count(3)->create([
             'building_id' => $building->id,
             'created_by' => $user->id,
         ]);
-
+    
         Sanctum::actingAs($user);
-
+    
         $response = $this->getJson("/api/buildings/{$building->id}/tasks");
-
+    
         $response->assertStatus(200)
             ->assertJsonCount(3, 'data')
             ->assertJsonStructure([
@@ -45,7 +48,10 @@ class TaskApiTest extends TestCase
         $user = User::factory()->create();
         $building = Building::factory()->create();
         
-        // Create tasks with different statuses
+        // CRUCIAL: Concede acesso ao usuário
+        $building->users()->attach($user);
+        
+        // Cria tasks com diferentes status
         Task::factory()->create([
             'building_id' => $building->id,
             'created_by' => $user->id,
@@ -57,11 +63,16 @@ class TaskApiTest extends TestCase
             'created_by' => $user->id,
             'status' => 'in_progress',
         ]);
-
+    
         Sanctum::actingAs($user);
-
+    
         $response = $this->getJson("/api/buildings/{$building->id}/tasks?status=open");
-
+    
+        // Debug: mostra a resposta se falhar
+        if ($response->status() !== 200) {
+            dump($response->json());
+        }
+    
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.status', 'open');
@@ -71,6 +82,9 @@ class TaskApiTest extends TestCase
     {
         $user = User::factory()->create();
         $building = Building::factory()->create();
+        
+        // CRUCIAL: Concede acesso ao usuário no edifício
+        $building->users()->attach($user);
 
         Sanctum::actingAs($user);
 
@@ -83,6 +97,11 @@ class TaskApiTest extends TestCase
         ];
 
         $response = $this->postJson('/api/tasks', $taskData);
+
+        // Debug: mostra a resposta se falhar
+        if ($response->status() !== 201) {
+            dump($response->json());
+        }
 
         $response->assertStatus(201)
             ->assertJsonStructure([
