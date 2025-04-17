@@ -22,8 +22,12 @@ class TaskController extends Controller
         $this->taskService = $taskService;
     }
 
-    /**
-     * List tasks for a building with optional filters
+   /**
+     * Lista tarefas para um edifício com filtros opcionais.
+     *
+     * @param \App\Models\Building $building O edifício cujas tarefas serão listadas
+     * @param \App\Http\Requests\TaskFilterRequest $request A requisição com os filtros
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection Coleção de recursos de tarefas
      */
     public function index(Building $building, TaskFilterRequest $request): AnonymousResourceCollection
     {
@@ -33,7 +37,10 @@ class TaskController extends Controller
     }
 
     /**
-     * Create a new task
+     * Cria uma nova tarefa.
+     *
+     * @param \App\Http\Requests\StoreTaskRequest $request A requisição validada
+     * @return \Illuminate\Http\JsonResponse Resposta JSON com a tarefa criada
      */
     public function store(StoreTaskRequest $request): JsonResponse
     {
@@ -45,7 +52,11 @@ class TaskController extends Controller
     }
 
     /**
-     * Update the status of a task
+     * Atualiza o status de uma tarefa.
+     *
+     * @param \App\Models\Task $task A tarefa a ser atualizada
+     * @param \App\Http\Requests\UpdateTaskStatusRequest $request A requisição validada
+     * @return \Illuminate\Http\JsonResponse Resposta JSON com a tarefa atualizada
      */
     public function updateStatus(Task $task, UpdateTaskStatusRequest $request): JsonResponse
     {

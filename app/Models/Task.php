@@ -26,21 +26,45 @@ class Task extends Model
         'due_date' => 'date',
     ];
 
+    /**
+     * Obtém o edifício ao qual esta tarefa pertence.
+     *
+     * Relação muitos-para-um com o modelo Building.
+     *
+     */
     public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
+    /**
+     * Obtém o usuário que criou esta tarefa.
+     *
+     * Relação muitos-para-um com o modelo User, usando o campo 'created_by'.
+     *
+     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * Obtém o usuário atribuído a esta tarefa.
+     *
+     * Relação muitos-para-um com o modelo User, usando o campo 'assigned_to'.
+     *
+     */
     public function assignee(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    /**
+     * Obtém os comentários associados a esta tarefa.
+     *
+     * Relação um-para-muitos com o modelo Comment.
+     *
+     */
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);

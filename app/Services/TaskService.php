@@ -8,8 +8,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class TaskService
 {
-    /**
-     * Get filtered tasks for a building
+/**
+     * Obtém tarefas filtradas para um edifício específico.
+     *
+     * Aplica filtros opcionais como status, usuário atribuído, datas de criação
+     * e datas de vencimento às tarefas do edifício especificado.
+     *
+     * @param \App\Models\Building $building O edifício cujas tarefas serão filtradas
+     * @param array $filters Os filtros a serem aplicados à consulta
+     * @return \Illuminate\Pagination\LengthAwarePaginator Uma coleção paginada de tarefas filtradas
      */
     public function getFilteredTasks(Building $building, array $filters): LengthAwarePaginator
     {
@@ -38,7 +45,13 @@ class TaskService
     }
 
     /**
-     * Create a new task
+     * Cria uma nova tarefa.
+     *
+     * Define o usuário autenticado como o criador da tarefa
+     * e atribui um status padrão 'open' se não for especificado.
+     *
+     * @param array $data Os dados da tarefa
+     * @return \App\Models\Task A tarefa criada
      */
     public function createTask(array $data): Task
     {
@@ -52,8 +65,12 @@ class TaskService
     }
 
     /**
-     * Update the status of a task
-     */
+     * Atualiza o status de uma tarefa.
+     *
+     * @param \App\Models\Task $task A tarefa a ser atualizada
+     * @param string $status O novo status da tarefa
+     * @return \App\Models\Task A tarefa atualizada
+     */    
     public function updateTaskStatus(Task $task, string $status): Task
     {
         $task->status = $status;

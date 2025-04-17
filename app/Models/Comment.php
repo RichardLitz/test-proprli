@@ -17,11 +17,25 @@ class Comment extends Model
         'content',
     ];
 
+    /**
+     * Obtém a tarefa à qual este comentário pertence.
+     *
+     * Relação muitos-para-um com o modelo Task.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function task(): BelongsTo
     {
         return $this->belongsTo(Task::class);
     }
 
+    /**
+     * Obtém o usuário que criou este comentário.
+     *
+     * Relação muitos-para-um com o modelo User.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

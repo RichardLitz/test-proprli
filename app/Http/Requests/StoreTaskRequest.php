@@ -9,6 +9,13 @@ use Illuminate\Validation\Rule;
 
 class StoreTaskRequest extends FormRequest
 {
+    /**
+     * Determina se o usuário está autorizado a fazer esta requisição.
+     *
+     * Verifica se o usuário tem acesso ao edifício especificado na requisição.
+     *
+     * @return bool True se o usuário tiver acesso ao edifício, false caso contrário
+     */
     public function authorize(): bool
     {
         if (!$this->filled('building_id')) {
@@ -21,6 +28,11 @@ class StoreTaskRequest extends FormRequest
         return $building && $building->users()->where('users.id', $this->user()->id)->exists();
     }
 
+    /**
+     * Obtém as regras de validação aplicáveis à requisição.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     */
     public function rules(): array
     {
         return [
@@ -48,6 +60,11 @@ class StoreTaskRequest extends FormRequest
         ];
     }
 
+    /**
+     * Obtém as mensagens de erro personalizadas para as regras de validação.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
