@@ -1,0 +1,56 @@
+
+services:
+  # Serviço do Laravel (PHP-FPM)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    container_name: laravel_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+  # Serviço do Nginx
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: laravel_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - app-network
+    depends_on:
+      - app
+
+  # Serviço do PostgreSQL
+  db:
+    image: postgres:14
+    container_name: laravel_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: laravel
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:
