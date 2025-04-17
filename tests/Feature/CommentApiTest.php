@@ -18,7 +18,6 @@ class CommentApiTest extends TestCase
         $user = User::factory()->create();
         $building = Building::factory()->create();
         
-        // Garante que o usuário tem acesso ao building
         $building->users()->attach($user);
         
         $task = Task::factory()->create([
@@ -34,7 +33,6 @@ class CommentApiTest extends TestCase
 
         $response = $this->postJson("/api/tasks/{$task->id}/comments", $commentData);
 
-        // Debug: mostra a resposta completa em caso de falha
         $response->assertStatus(201)
             ->assertJsonStructure([
                 'data' => [

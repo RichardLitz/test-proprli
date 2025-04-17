@@ -48,10 +48,8 @@ class TaskApiTest extends TestCase
         $user = User::factory()->create();
         $building = Building::factory()->create();
         
-        // CRUCIAL: Concede acesso ao usuário
         $building->users()->attach($user);
         
-        // Cria tasks com diferentes status
         Task::factory()->create([
             'building_id' => $building->id,
             'created_by' => $user->id,
@@ -68,7 +66,6 @@ class TaskApiTest extends TestCase
     
         $response = $this->getJson("/api/buildings/{$building->id}/tasks?status=open");
     
-        // Debug: mostra a resposta se falhar
         if ($response->status() !== 200) {
             dump($response->json());
         }
@@ -83,7 +80,6 @@ class TaskApiTest extends TestCase
         $user = User::factory()->create();
         $building = Building::factory()->create();
         
-        // CRUCIAL: Concede acesso ao usuário no edifício
         $building->users()->attach($user);
 
         Sanctum::actingAs($user);
@@ -98,7 +94,6 @@ class TaskApiTest extends TestCase
 
         $response = $this->postJson('/api/tasks', $taskData);
 
-        // Debug: mostra a resposta se falhar
         if ($response->status() !== 201) {
             dump($response->json());
         }
