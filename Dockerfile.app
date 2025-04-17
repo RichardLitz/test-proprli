@@ -30,17 +30,30 @@ WORKDIR /var/www/html
 # Copia arquivos do projeto
 COPY . /var/www/html
 
-# Permissões para o diretório de armazenamento
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Certifique-se de que o PHP-FPM está configurado para usar www-data
+RUN sed -i 's/user = root/user = www-data/g' /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i 's/group = root/group = www-data/g' /usr/local/etc/php-fpm.d/www.conf
 
 # Executa o Composer
 RUN composer install --optimize-autoloader --no-dev
 
-# Configurar o usuário para PHP-FPM
-RUN sed -i 's/user = www-data/user = root/g' /usr/local/etc/php-fpm.d/www.conf
-RUN sed -i 's/group = www-data/group = root/g' /usr/local/etc/php-fpm.d/www.conf
+# Cria diretórios de armazenamento e cache se não existirem
+RUN mkdir -p /var/www/html/storage/logs \
+    /var/www/html/storage/framework/sessions \
+    /var/www/html/storage/framework/views \
+    /var/www/html/storage/framework/cache \
+    /var/www/html/bootstrap/cache
+
+# Define permissões adequadas para todos os diretórios de armazenamento
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Exponha a porta 9000 (PHP-FPM)
 EXPOSE 9000
 
+# Script de entrada personalizado para garantir permissões corretas
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]
